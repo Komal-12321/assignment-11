@@ -97,19 +97,25 @@
   }
 
   function loadHistory() {
-    const records = JSON.parse(localStorage.getItem("attendance")) || [];
-    const list = document.getElementById("history");
+  const records = JSON.parse(localStorage.getItem("attendance")) || [];
+  const list = document.getElementById("history");
 
-    list.innerHTML = "";
+  list.innerHTML = "";
 
-    records.slice().reverse().forEach(item => {
-      const li = document.createElement("li");
+  records.slice().reverse().forEach(item => {
+    const li = document.createElement("li");
+
+    // FIX: handle old + new data safely
+    if (typeof item === "object" && item.name && item.time) {
       li.textContent = `${item.name} → ${item.time}`;
-      list.appendChild(li);
-    });
-  }
+    } else {
+      // skip invalid/old data
+      return;
+    }
 
-  loadHistory();
+    list.appendChild(li);
+  });
+}
 </script>
 
 </body>
