@@ -24,6 +24,14 @@
       box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
     }
 
+    input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
     button {
       padding: 10px 20px;
       border: none;
@@ -51,6 +59,9 @@
 <div class="container">
   <h2>📋 Attendance System</h2>
 
+  <!-- NEW INPUT -->
+  <input type="text" id="name" placeholder="Enter your name" />
+
   <button onclick="markAttendance()">Mark Present</button>
 
   <p id="status"></p>
@@ -61,15 +72,26 @@
 
 <script>
   function markAttendance() {
+    const name = document.getElementById("name").value.trim();
+
+    if (!name) {
+      alert("Please enter your name!");
+      return;
+    }
+
     const now = new Date().toLocaleString();
 
     let records = JSON.parse(localStorage.getItem("attendance")) || [];
-    records.push(now);
+
+    // store object (name + time)
+    records.push({ name: name, time: now });
 
     localStorage.setItem("attendance", JSON.stringify(records));
 
     document.getElementById("status").innerHTML =
-      "✅ Marked at " + now;
+      `✅ ${name} marked present at ${now}`;
+
+    document.getElementById("name").value = "";
 
     loadHistory();
   }
@@ -82,12 +104,11 @@
 
     records.slice().reverse().forEach(item => {
       const li = document.createElement("li");
-      li.textContent = item;
+      li.textContent = `${item.name} → ${item.time}`;
       list.appendChild(li);
     });
   }
 
-  // Load on start
   loadHistory();
 </script>
 
